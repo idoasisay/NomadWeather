@@ -1,5 +1,12 @@
 import * as Location from "expo-location";
-import { StyleSheet, Text, View, ScrollView, Dimensions } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Dimensions,
+  ActivityIndicator,
+} from "react-native";
 import { useEffect, useState } from "react";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -35,9 +42,9 @@ export default function App() {
     // 시티 설정
     setCity(location[0].city);
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
     ).then(value => value.json());
-    // setDays(response.list);
+    setDays(response.list);
   };
 
   // 렌더링 될 때마다 getWeather 실행
@@ -57,10 +64,21 @@ export default function App() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.weather}
       >
-        <View style={styles.day}>
-          <Text style={styles.temp}>27</Text>
-          <Text style={styles.description}>Sunny</Text>
-        </View>
+        {days.length === 0 ? (
+          <View style={styles.day}>
+            <ActivityIndicator color="white" size="large" />
+          </View>
+        ) : (
+          days.map((day, index) => (
+            <View key={index} style={styles.day}>
+              <Text style={styles.temp}>
+                {parseFloat(day.main.temp).toFixed(1)}
+              </Text>
+              <Text style={styles.description}>{day.weather[0].main}</Text>
+              <Text>{day.dt_txt}</Text>
+            </View>
+          ))
+        )}
       </ScrollView>
     </View>
   );
@@ -81,6 +99,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     alignItems: "center",
   },
-  temp: { fontSize: 175, marginTop: 50 },
-  description: { fontSize: 60 },
+  temp: { fontSize: 105, marginTop: 50 },
+  description: { fontSize: 40 },
 });
