@@ -29,7 +29,7 @@ export default function App() {
   };
   const loadToDos = async () => {
     const s = await AsyncStorage.getItem(STORAGE_KEY);
-    setToDos(JSON.parse(s));
+    if (s) setToDos(JSON.parse(s));
   };
 
   useEffect(() => {
@@ -147,3 +147,13 @@ const styles = StyleSheet.create({
     fontWeight: "900",
   },
 });
+
+/**
+ * 코드 챌린지
+ * 1. 앱 재실행시 마지막 상태의 Work 또는 Travel 기억
+ * 2. ToDo 완료, 수정 기능 추가
+ * 3. 최신순
+ * 4. 전체 삭제
+ * 5. 다크 모드
+ *
+ */
